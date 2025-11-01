@@ -16,12 +16,17 @@ if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 
 	add_library(${PROJECT_NAME})
 
+	target_compile_definitions(${PROJECT_NAME} PRIVATE NORISCOMMONUI_LIBRARY)
+
 	set_target_properties(${PROJECT_NAME} PROPERTIES SOVERSION 0)
 	include(cmake/install-noriscommonui.cmake)
 
 	file(GENERATE OUTPUT .gitignore CONTENT "*\n")
 else()
 	add_library(${PROJECT_NAME} STATIC)
+
+	target_compile_definitions(${PROJECT_NAME} PUBLIC NORISCOMMONUI_STATIC)
+
 	set_property(TARGET ${PROJECT_NAME} PROPERTY POSITION_INDEPENDENT_CODE ON)
 endif()
 
@@ -33,8 +38,6 @@ target_sources(
 	src/SurfaceEventFilter.cpp
 	include/OBSQTDisplay.hpp
 )
-
-target_compile_definitions(${PROJECT_NAME} PRIVATE NORISCOMMONUI_LIBRARY)
 
 target_include_directories(
 	${PROJECT_NAME}
