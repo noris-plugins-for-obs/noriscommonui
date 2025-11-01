@@ -17,6 +17,7 @@
  *
  * - Copied from obs-studio/frontend/widgets/OBSQTDisplay.cpp
  * - Added checking display before use.
+ * - Removed `destroying` so that a dock can be shown again.
  * - See OBSQTDisplay.hpp for other modifications.
  */
 
@@ -49,7 +50,6 @@
 
 struct private_data_s {
 	OBSDisplay display;
-	bool destroying = false;
 	uint32_t backgroundColor = GREY_COLOR_BACKGROUND;
 	void UpdateDisplayBackgroundColor();
 };
@@ -144,14 +144,12 @@ OBSQTDisplay::OBSQTDisplay(QWidget *parent, Qt::WindowFlags flags) : QWidget(par
 
 OBSQTDisplay::~OBSQTDisplay()
 {
-	priv.display = nullptr;
 	delete &priv;
 }
 
 void OBSQTDisplay::DestroyDisplay()
 {
 	priv.display = nullptr;
-	priv.destroying = true;
 }
 
 obs_display_t *OBSQTDisplay::GetDisplay() const
@@ -182,9 +180,6 @@ void private_data_s::UpdateDisplayBackgroundColor()
 void OBSQTDisplay::CreateDisplay()
 {
 	if (priv.display)
-		return;
-
-	if (priv.destroying)
 		return;
 
 	if (!windowHandle()->isExposed())
