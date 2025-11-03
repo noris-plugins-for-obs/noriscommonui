@@ -46,12 +46,10 @@
 
 #include "moc_NorisQTDisplay.cpp"
 
-#define GREY_COLOR_BACKGROUND 0xFF4C4C4C
+#define DEFAULT_BACKGROUND_COLOR 0xFF000000
 
 struct private_data_s {
 	OBSDisplay display;
-	uint32_t backgroundColor = GREY_COLOR_BACKGROUND;
-	void UpdateDisplayBackgroundColor();
 };
 
 static inline long long color_to_int(const QColor &color)
@@ -159,26 +157,6 @@ obs_display_t *NorisQTDisplay::GetDisplay() const
 	return priv.display;
 }
 
-QColor NorisQTDisplay::GetDisplayBackgroundColor() const
-{
-	return rgba_to_color(priv.backgroundColor);
-}
-
-void NorisQTDisplay::SetDisplayBackgroundColor(const QColor &color)
-{
-	uint32_t newBackgroundColor = (uint32_t)color_to_int(color);
-
-	if (newBackgroundColor != priv.backgroundColor) {
-		priv.backgroundColor = newBackgroundColor;
-		priv.UpdateDisplayBackgroundColor();
-	}
-}
-
-void private_data_s::UpdateDisplayBackgroundColor()
-{
-	obs_display_set_background_color(display, backgroundColor);
-}
-
 void NorisQTDisplay::CreateDisplay()
 {
 	if (priv.display)
@@ -198,7 +176,7 @@ void NorisQTDisplay::CreateDisplay()
 	if (!QTToGSWindow(windowHandle(), info.window))
 		return;
 
-	priv.display = obs_display_create(&info, priv.backgroundColor);
+	priv.display = obs_display_create(&info, DEFAULT_BACKGROUND_COLOR);
 
 	emit DisplayCreated(this);
 }

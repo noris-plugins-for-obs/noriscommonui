@@ -37,8 +37,6 @@
 
 class NORISCOMMONUI_EXPORT NorisQTDisplay : public QWidget {
 	Q_OBJECT
-	Q_PROPERTY(QColor displayBackgroundColor MEMBER backgroundColor READ GetDisplayBackgroundColor WRITE
-			   SetDisplayBackgroundColor)
 
 	struct private_data_s &priv;
 
@@ -59,8 +57,6 @@ public:
 
 	obs_display_t *GetDisplay() const;
 
-	QColor GetDisplayBackgroundColor() const;
-	void SetDisplayBackgroundColor(const QColor &color);
 	void CreateDisplay();
 	void DestroyDisplay();
 
