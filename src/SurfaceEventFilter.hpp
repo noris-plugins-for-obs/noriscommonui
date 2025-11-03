@@ -16,21 +16,20 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * - Copied from obs-studio/frontend/utility/SurfaceEventFilter.hpp
+ * - Renamed SurfaceEventFilter to NorisQTDisplay_SurfaceEventFilter
  */
 #pragma once
-
-#include <OBSQTDisplay.hpp>
 
 #include <QObject>
 #include <QPlatformSurfaceEvent>
 
-class SurfaceEventFilter : public QObject {
+class Q_DECL_HIDDEN NorisQTDisplay_SurfaceEventFilter : public QObject {
 	Q_OBJECT
 
-	OBSQTDisplay *display;
+	class NorisQTDisplay *display;
 
 public:
-	SurfaceEventFilter(OBSQTDisplay *src) : QObject(src), display(src) {}
+	NorisQTDisplay_SurfaceEventFilter(NorisQTDisplay *src) : QObject(src), display(src) {}
 
 protected:
 	bool eventFilter(QObject *obj, QEvent *event) override;

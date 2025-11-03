@@ -16,7 +16,8 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  *
  * - Copied from obs-studio/frontend/widgets/OBSQTDisplay.hpp
- * - Moved inline function definitions to OBSQTDisplay.cpp.
+ * - Renamed OBSQTDisplay to NorisQTDisplay
+ * - Moved inline function definitions to NorisQTDisplay.cpp.
  * - Moved private data into a hidden structure.
  */
 
@@ -34,7 +35,7 @@
 #define NORISCOMMONUI_EXPORT Q_DECL_IMPORT
 #endif
 
-class NORISCOMMONUI_EXPORT OBSQTDisplay : public QWidget {
+class NORISCOMMONUI_EXPORT NorisQTDisplay : public QWidget {
 	Q_OBJECT
 	Q_PROPERTY(QColor displayBackgroundColor MEMBER backgroundColor READ GetDisplayBackgroundColor WRITE
 			   SetDisplayBackgroundColor)
@@ -47,12 +48,12 @@ class NORISCOMMONUI_EXPORT OBSQTDisplay : public QWidget {
 	virtual bool nativeEvent(const QByteArray &eventType, void *message, qintptr *result) override;
 
 signals:
-	void DisplayCreated(OBSQTDisplay *window);
+	void DisplayCreated(NorisQTDisplay *window);
 	void DisplayResized();
 
 public:
-	OBSQTDisplay(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
-	~OBSQTDisplay();
+	NorisQTDisplay(QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::WindowFlags());
+	~NorisQTDisplay();
 
 	virtual QPaintEngine *paintEngine() const override;
 

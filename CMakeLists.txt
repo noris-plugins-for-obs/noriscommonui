@@ -34,9 +34,9 @@ endif()
 target_sources(
 	${PROJECT_NAME}
 	PRIVATE
-	src/OBSQTDisplay.cpp
+	src/NorisQTDisplay.cpp
 	src/SurfaceEventFilter.cpp
-	include/OBSQTDisplay.hpp
+	include/NorisQTDisplay.hpp
 )
 
 target_include_directories(

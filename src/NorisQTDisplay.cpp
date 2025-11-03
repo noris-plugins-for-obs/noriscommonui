@@ -18,11 +18,11 @@
  * - Copied from obs-studio/frontend/widgets/OBSQTDisplay.cpp
  * - Added checking display before use.
  * - Removed `destroying` so that a dock can be shown again.
- * - See OBSQTDisplay.hpp for other modifications.
+ * - See NorisQTDisplay.hpp for other modifications.
  */
 
 #include "obs.hpp"
-#include "OBSQTDisplay.hpp"
+#include "NorisQTDisplay.hpp"
 
 #include <display-helpers.hpp>
 #include <SurfaceEventFilter.hpp>
@@ -44,7 +44,7 @@
 #include <Windows.h>
 #endif
 
-#include "moc_OBSQTDisplay.cpp"
+#include "moc_NorisQTDisplay.cpp"
 
 #define GREY_COLOR_BACKGROUND 0xFF4C4C4C
 
@@ -102,7 +102,9 @@ static bool QTToGSWindow(QWindow *window, gs_window &gswindow)
 	return success;
 }
 
-OBSQTDisplay::OBSQTDisplay(QWidget *parent, Qt::WindowFlags flags) : QWidget(parent, flags), priv(*new private_data_s())
+NorisQTDisplay::NorisQTDisplay(QWidget *parent, Qt::WindowFlags flags)
+	: QWidget(parent, flags),
+	  priv(*new private_data_s())
 {
 	setAttribute(Qt::WA_PaintOnScreen);
 	setAttribute(Qt::WA_StaticContents);
@@ -139,30 +141,30 @@ OBSQTDisplay::OBSQTDisplay(QWidget *parent, Qt::WindowFlags flags) : QWidget(par
 	connect(windowHandle(), &QWindow::visibleChanged, windowVisible);
 	connect(windowHandle(), &QWindow::screenChanged, screenChanged);
 
-	windowHandle()->installEventFilter(new SurfaceEventFilter(this));
+	windowHandle()->installEventFilter(new NorisQTDisplay_SurfaceEventFilter(this));
 }
 
-OBSQTDisplay::~OBSQTDisplay()
+NorisQTDisplay::~NorisQTDisplay()
 {
 	delete &priv;
 }
 
-void OBSQTDisplay::DestroyDisplay()
+void NorisQTDisplay::DestroyDisplay()
 {
 	priv.display = nullptr;
 }
 
-obs_display_t *OBSQTDisplay::GetDisplay() const
+obs_display_t *NorisQTDisplay::GetDisplay() const
 {
 	return priv.display;
 }
 
-QColor OBSQTDisplay::GetDisplayBackgroundColor() const
+QColor NorisQTDisplay::GetDisplayBackgroundColor() const
 {
 	return rgba_to_color(priv.backgroundColor);
 }
 
-void OBSQTDisplay::SetDisplayBackgroundColor(const QColor &color)
+void NorisQTDisplay::SetDisplayBackgroundColor(const QColor &color)
 {
 	uint32_t newBackgroundColor = (uint32_t)color_to_int(color);
 
@@ -177,7 +179,7 @@ void private_data_s::UpdateDisplayBackgroundColor()
 	obs_display_set_background_color(display, backgroundColor);
 }
 
-void OBSQTDisplay::CreateDisplay()
+void NorisQTDisplay::CreateDisplay()
 {
 	if (priv.display)
 		return;
@@ -201,21 +203,21 @@ void OBSQTDisplay::CreateDisplay()
 	emit DisplayCreated(this);
 }
 
-void OBSQTDisplay::paintEvent(QPaintEvent *event)
+void NorisQTDisplay::paintEvent(QPaintEvent *event)
 {
 	CreateDisplay();
 
 	QWidget::paintEvent(event);
 }
 
-void OBSQTDisplay::moveEvent(QMoveEvent *event)
+void NorisQTDisplay::moveEvent(QMoveEvent *event)
 {
 	QWidget::moveEvent(event);
 
 	OnMove();
 }
 
-bool OBSQTDisplay::nativeEvent(const QByteArray &, void *message, qintptr *)
+bool NorisQTDisplay::nativeEvent(const QByteArray &, void *message, qintptr *)
 {
 #ifdef _WIN32
 	const MSG &msg = *static_cast<MSG *>(message);
@@ -230,7 +232,7 @@ bool OBSQTDisplay::nativeEvent(const QByteArray &, void *message, qintptr *)
 	return false;
 }
 
-void OBSQTDisplay::resizeEvent(QResizeEvent *event)
+void NorisQTDisplay::resizeEvent(QResizeEvent *event)
 {
 	QWidget::resizeEvent(event);
 
@@ -244,18 +246,18 @@ void OBSQTDisplay::resizeEvent(QResizeEvent *event)
 	emit DisplayResized();
 }
 
-QPaintEngine *OBSQTDisplay::paintEngine() const
+QPaintEngine *NorisQTDisplay::paintEngine() const
 {
 	return nullptr;
 }
 
-void OBSQTDisplay::OnMove()
+void NorisQTDisplay::OnMove()
 {
 	if (priv.display)
 		obs_display_update_color_space(priv.display);
 }
 
-void OBSQTDisplay::OnDisplayChange()
+void NorisQTDisplay::OnDisplayChange()
 {
 	if (priv.display)
 		obs_display_update_color_space(priv.display);

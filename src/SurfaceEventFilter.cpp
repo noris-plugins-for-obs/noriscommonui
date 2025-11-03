@@ -19,10 +19,11 @@
  * - Separated the implementation of eventFilter.
  */
 
+#include <NorisQTDisplay.hpp>
 #include <SurfaceEventFilter.hpp>
 #include "moc_SurfaceEventFilter.cpp"
 
-bool SurfaceEventFilter::eventFilter(QObject *obj, QEvent *event)
+bool NorisQTDisplay_SurfaceEventFilter::eventFilter(QObject *obj, QEvent *event)
 {
 	bool result = QObject::eventFilter(obj, event);
 	QPlatformSurfaceEvent *surfaceEvent;
