@@ -8,12 +8,20 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
-if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
+if(NOT TARGET OBS::libobs)
 	find_package(libobs REQUIRED)
+endif()
+if(NOT TARGET OBS::frontend-api)
 	find_package(obs-frontend-api REQUIRED)
 	add_library(OBS::frontend-api ALIAS OBS::obs-frontend-api)
-	find_package(Qt6 REQUIRED COMPONENTS Widgets Gui)
+endif()
+find_package(Qt6 REQUIRED COMPONENTS Widgets Gui)
+if(UNIX AND NOT APPLE)
+	# NixOS requires to find GuiPrivate.
+	find_package(Qt6 QUIET COMPONENTS GuiPrivate)
+endif()
 
+if(${CMAKE_SOURCE_DIR} STREQUAL ${CMAKE_CURRENT_SOURCE_DIR})
 	add_library(${PROJECT_NAME})
 
 	target_compile_definitions(${PROJECT_NAME} PRIVATE NORISCOMMONUI_LIBRARY)
@@ -56,10 +64,10 @@ target_link_libraries(${PROJECT_NAME}
 	OBS::libobs
 	OBS::frontend-api
 	Qt::Widgets
-	Qt::GuiPrivate
 )
 
 if(UNIX AND NOT APPLE)
 	target_compile_options(${PROJECT_NAME} PRIVATE -Wall -Wextra)
 	target_link_options(${PROJECT_NAME} PRIVATE -Wl,-z,defs)
+	target_link_libraries(${PROJECT_NAME} Qt::GuiPrivate)
 endif()
