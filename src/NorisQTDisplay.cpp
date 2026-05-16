@@ -50,6 +50,8 @@
 
 struct private_data_s {
 	OBSDisplay display;
+
+	void onUpdate();
 };
 
 static inline long long color_to_int(const QColor &color)
@@ -192,7 +194,7 @@ void NorisQTDisplay::moveEvent(QMoveEvent *event)
 {
 	QWidget::moveEvent(event);
 
-	OnMove();
+	priv.onUpdate();
 }
 
 bool NorisQTDisplay::nativeEvent(const QByteArray &, void *message, qintptr *)
@@ -201,7 +203,7 @@ bool NorisQTDisplay::nativeEvent(const QByteArray &, void *message, qintptr *)
 	const MSG &msg = *static_cast<MSG *>(message);
 	switch (msg.message) {
 	case WM_DISPLAYCHANGE:
-		OnDisplayChange();
+		priv.onUpdate();
 	}
 #else
 	UNUSED_PARAMETER(message);
@@ -229,14 +231,8 @@ QPaintEngine *NorisQTDisplay::paintEngine() const
 	return nullptr;
 }
 
-void NorisQTDisplay::OnMove()
+void private_data_s::onUpdate()
 {
-	if (priv.display)
-		obs_display_update_color_space(priv.display);
-}
-
-void NorisQTDisplay::OnDisplayChange()
-{
-	if (priv.display)
-		obs_display_update_color_space(priv.display);
+	if (display)
+		obs_display_update_color_space(display);
 }

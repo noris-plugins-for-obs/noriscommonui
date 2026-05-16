@@ -59,7 +59,4 @@ public:
 
 	void CreateDisplay();
 	void DestroyDisplay();
-
-	void OnMove();
-	void OnDisplayChange();
 };
