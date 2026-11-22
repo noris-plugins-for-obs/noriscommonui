@@ -168,6 +168,8 @@ void NorisQTDisplay::CreateDisplay()
 		return;
 
 	QSize size = GetPixelSize(this);
+	if (size.isEmpty())
+		return;
 
 	gs_init_data info = {};
 	info.cx = size.width();
@@ -220,7 +222,8 @@ void NorisQTDisplay::resizeEvent(QResizeEvent *event)
 
 	if (isVisible() && priv.display) {
 		QSize size = GetPixelSize(this);
-		obs_display_resize(priv.display, size.width(), size.height());
+		if (!size.isEmpty())
+			obs_display_resize(priv.display, size.width(), size.height());
 	}
 
 	emit DisplayResized();
